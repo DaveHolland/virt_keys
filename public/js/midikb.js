@@ -188,7 +188,7 @@ function press(num, ch, vel){
 
 	// play a note
 	var source1 = context.createBufferSource();
-	source1.buffer = this.bufferLoader.bufferList[num-24];
+	source1.buffer = this.bufferLoader.bufferList[num-23];
 	source1.connect(context.destination);
 	source1.noteOn(0);
 }
