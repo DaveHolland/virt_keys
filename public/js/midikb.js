@@ -252,7 +252,6 @@ function keyboardPress(num, oct){
 		press(keymap[num] + oct * 12);
 		return true;
 	}
-	alert('got here');
 }
 
 function keyboardRelease(num, oct){
@@ -294,7 +293,7 @@ function defineElements(){
 	settingButton = create('button', {
 		id: 'settingButton',
 		title: 'Settings',
-		html: 'Settings'
+		html: 'Control Panel'
 	});
 
 	var sldOptions = {
