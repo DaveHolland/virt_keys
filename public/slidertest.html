@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<script src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Virtual Midi Keyboard</title>
+		<link rel="stylesheet" href="css/midikb.css" />
+	</head>
+
+<script language="javascript" >
+
+// Create a YUI sandbox on your page.
+YUI().use('node', 'event', function (Y) {
+
+	alert('got here');
+
+    // Vertical slider with values that increase from bottom to top and
+    // initialize the thumb in the middle.
+    var slider = new Y.Slider({
+        axis        : 'y',
+        min         : 100,
+        max         : 0,
+        value       : 50
+    });
+    slider.render('#slider_parent');
+
+});
+
+
+</script>
+
+<html>
+<div id="slider_parent"></div>
+
+</html>

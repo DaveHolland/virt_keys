@@ -1,10 +1,45 @@
  HTML5MIDI<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<script src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
+		<embed src="1080-c12.mid" hidden="true" autostart="true" loop="true">
 		<title>Virtual Midi Keyboard</title>
 		<link rel="stylesheet" href="css/midikb.css" />
 
-<script language="javascript" > 
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    	<link rel="stylesheet" type="text/css" href="../../assets/yui.css" >
+
+<style type="text/css">
+/*margin and padding on body element
+  can introduce errors in determining
+  element position and are not recommended;
+  we turn them off as a foundation for YUI
+  CSS treatments. */
+body {
+	margin:0;
+	padding:0;
+}
+</style>
+
+<script type="text/javascript">
+
+var recording = false;
+var recordedEvents = [];
+var sequenceIndex = 0;
+
+function myTurn()
+{
+	//alert('Got here');
+	recording = true;
+	recordedEvents = [];
+	sequenceIndex = 0;
+}
+
+function help()
+{
+}
 
 function BufferLoader(context, urlList, callback) {
   this.context = context;
@@ -54,15 +89,20 @@ window.onload = init;
 var context;
 var bufferLoader;
 
+var runtime;
+
 function init() {
   context = new webkitAudioContext();
-
-  alert('About to load piano.  Are you using Google Chrome?');
 
   bufferLoader = new BufferLoader(
     context,
     [
 	'wav/chimes.wav',
+      'mp3/PIANO_LOUD_G2s.mp3',
+      'mp3/PIANO_LOUD_AB2s.mp3',
+	'mp3/PIANO_LOUD_A2s.mp3',
+	'mp3/PIANO_LOUD_BB2s.mp3',
+	'wav/PIANO_LOUD_B2s.wav',
       'wav/PIANO_LOUD_C3s.wav',
       'wav/PIANO_LOUD_DB3s.wav',
 	'wav/PIANO_LOUD_D3s.wav',
@@ -87,7 +127,33 @@ function init() {
 	'wav/PIANO_LOUD_A4s.wav',
 	'wav/PIANO_LOUD_BB4s.wav',
 	'wav/PIANO_LOUD_B4s.wav',
-	'wav/PIANO_LOUD_C5s.wav'
+	'wav/PIANO_LOUD_C5s.wav',
+      'wav/PIANO_LOUD_DB5s.wav',
+	'wav/PIANO_LOUD_D5s.wav',
+	'wav/PIANO_LOUD_EB5s.wav',
+	'wav/PIANO_LOUD_E5s.wav',
+	'wav/PIANO_LOUD_F5s.wav',
+      'wav/PIANO_LOUD_GB5s.wav',
+	'wav/PIANO_LOUD_G5s.wav',
+	'wav/PIANO_LOUD_AB5s.wav',
+	'wav/PIANO_LOUD_A5s.wav',
+	'wav/PIANO_LOUD_BB5s.wav',
+	'wav/PIANO_LOUD_B5s.wav',
+	'wav/PIANO_LOUD_C6s.wav',
+      'wav/PIANO_LOUD_DB6s.wav',
+	'wav/PIANO_LOUD_D6s.wav',
+	'wav/PIANO_LOUD_EB6s.wav',
+	'wav/PIANO_LOUD_E6s.wav',
+	'wav/PIANO_LOUD_F6s.wav',
+      'wav/PIANO_LOUD_GB6s.wav',
+	'wav/PIANO_LOUD_G6s.wav',
+	'wav/PIANO_LOUD_AB6s.wav',
+	'wav/PIANO_LOUD_A6s.wav',
+	'wav/PIANO_LOUD_BB6s.wav',
+	'wav/PIANO_LOUD_B6s.wav',
+	'wav/PIANO_LOUD_C7s.wav',
+      'wav/PIANO_LOUD_DB7s.wav',
+	'wav/PIANO_LOUD_D7s.wav'
     ],
     finishedLoading
     );
@@ -99,7 +165,6 @@ function finishedLoading(bufferList) {
 
   // Create two sources and play them both together.
   var source1 = context.createBufferSource();
-  var source2 = context.createBufferSource();
 
   source1.buffer = bufferList[0];
   source1.connect(context.destination);
@@ -108,19 +173,218 @@ function finishedLoading(bufferList) {
 
 </script>
 
+<script src="stream.js"></script>
+		<script src="midifile.js"></script>
+		<script src="synth.js"></script>
+		<script src="replayer.js"></script>
+		<script src="audio.js"></script>
+		<script>
+			function loadRemote(path, callback) {
+				var fetch = new XMLHttpRequest();
+				fetch.open('GET', path, true);
+				fetch.overrideMimeType("text/plain; charset=x-user-defined");
+				fetch.onreadystatechange = function() {
+
+					if(this.readyState == 4 && this.status == 200) {
+
+						/* munge response into a binary string */
+						var t = this.responseText || "" ;
+						var ff = [];
+						var mx = t.length;
+						var scc= String.fromCharCode;
+
+						for (var z = 0; z < mx; z++) {
+							ff[z] = scc(t.charCodeAt(z) & 255);
+						}
+						callback(ff.join(""));
+					}
+				}
+				fetch.send();
+			}
+			
+			function play(file) {
+
+				loadRemote(file, function(data) {
+					midiFile = MidiFile(data);
+					replayer = Replayer(midiFile);
+					console.log('done making Replayer');
+					audio = AudioPlayer(replayer);
+					console.log('Done playing.');
+				})
+			}
+		</script>
+
+<link rel="stylesheet" type="text/css" href="../../build/fonts/fonts-min.css" />
+<link rel="stylesheet" type="text/css" href="../../build/slider/assets/skins/sam/slider.css" />
+<script type="text/javascript" src="../../build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="../../build/dragdrop/dragdrop-min.js"></script>
+<script type="text/javascript" src="../../build/slider/slider-min.js"></script>
+
+
+<!--begin custom header content for this example-->
+<style type="text/css">
+    #demo_bg {
+        position: relative;
+        background: url(../slider/assets/dual_thumb_bg_big.gif) 0 5px no-repeat;
+        height: 28px;
+        width: 910px;
+    }
+
+    #demo_bg div {
+        position: absolute;
+        cursor: default;
+        top: 4px;
+    }
+
+    #demo_bg span {
+        position: absolute;
+        background: url(../slider/assets/dual_thumb_highlight.gif) 0 0 repeat-x;
+        _font-size: 5px; /* prevent IE6 expanding the box height to font-size */
+        top: 10px;
+        left: 12px;
+        height: 13px;
+        width: 900px;
+    }
+
+    #demo_bg .caution {
+        background-position: 0 -13px;
+    }
+    #demo_bg .boom,
+    #demo_bg .danger {
+        background-position: 0 -26px;
+    }
+    p .ok {
+        color: #3a3;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    p .caution {
+        background: #ff3;
+        color: #770;
+        font-weight: bold;
+        font-style: italic;
+        padding: 0 1ex;
+        text-transform: uppercase;
+    }
+    p .danger {
+        color: #f33;
+        font-weight: bold;
+        text-decoration: blink;
+        text-transform: uppercase;
+    }
+    p .boom {
+        color: #fff;
+        background: #000;
+        padding: 0 1ex;
+    }
+</style>
+
+<!--end custom header content for this example-->
 
 		<script src="js/jin.js"></script>
 		<script src="js/jin-gestures.js"></script>
 		<script src="js/jin-ui.js"></script>
 		<script src="js/midikb.js"></script>
+
+<!--BEGIN SOURCE CODE FOR EXAMPLE =============================== -->
+
+<p>Range offsets: <span id="demo_range">0 - 900</span></p>
+<p>Status: <span id="demo_value" class="ok">ok</span></p>
+
+<script type="text/javascript">
+(function () {
+    YAHOO.namespace('example');
+
+    var Dom = YAHOO.util.Dom;
+
+    // Slider has a range of 300 pixels
+    var range = 900;
+
+    // Set up 12 pixel ticks
+    var tickSize = 1;
+
+    // Some arbitrary ranges to cue status changes
+    var caution_range = 800,
+        danger_range  = 100,
+        boom_range    = 50;
+
+    YAHOO.util.Event.onDOMReady(function () {
+        var reportSpan     = Dom.get("demo_range");
+        var calculatedSpan = Dom.get("demo_value");
+
+        // Create the DualSlider
+        var slider = YAHOO.widget.Slider.getHorizDualSlider("demo_bg",
+            "demo_min_thumb", "demo_max_thumb",
+            range, tickSize);
+        
+        // Decorate the DualSlider instance with some new properties and
+        // methods to maintain the highlight element
+        YAHOO.lang.augmentObject(slider, {
+            _status : 'ok',
+            _highlight : Dom.get("demo_highlight"),
+
+            getStatus : function () { return this._status; },
+
+            updateHighlight : function () {
+                var delta = this.maxVal - this.minVal,
+                    newStatus = 'ok';
+                
+
+
+                if (this._status !== newStatus) {
+                    // Update the highlight class if status is changed
+                    Dom.replaceClass(this._highlight,this._status,newStatus);
+                    this._status = newStatus;
+                }
+                if (this.activeSlider === this.minSlider) {
+                    // If the min thumb moved, move the highlight's left edge
+                    Dom.setStyle(this._highlight,'left', (this.minVal + 12) + 'px');
+                }
+                // Adjust the width of the highlight to match inner boundary
+                Dom.setStyle(this._highlight,'width', Math.max(delta - 12,0) + 'px');
+            }
+        },true);
+
+        // Attach the highlight method to the slider's change event
+        slider.subscribe('change',slider.updateHighlight,slider,true);
+
+        // Create an event callback to update some display fields
+        var report = function () {
+            reportSpan.innerHTML = slider.minVal + ' - ' + slider.maxVal;
+            // Call our conversion function
+            calculatedSpan.innerHTML =
+            calculatedSpan.className = slider.getStatus();
+        };
+
+        // Subscribe to the slider's change event to report the status.
+        slider.subscribe('change',report);
+
+        // Attach the slider to the YAHOO.example namespace for public probing
+        YAHOO.example.slider = slider;
+    });
+})();
+</script>
+
+<!--END SOURCE CODE FOR EXAMPLE =============================== -->
+
 	</head>
 	<body>
-    <td>
-      <div align="left">
-    		<embed src="FirstCircle9c.swf" id="as3_js" quality="high" scale="exactfit" width="1" height="1" name="squambido" align="middle" allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"/>
-      </div>
-    </td>
-	<bgsound src="1080-c12.mid"></bgsound>
-
+	<a color="white" href="javascript:void(play('minute_waltz.mid'))">Chopin - Waltz Op.61 (Minute Waltz)</a> |
 	</body>
+	
+<div id="demo_bg" style="position:absolute;Left:5%;bottom:-10;top: 92%" >
+    <span id="demo_highlight"></span>
+    <div id="demo_min_thumb"><img src="assets/l-thumb-round.gif"></div>
+    <div id="demo_max_thumb"><img src="assets/r-thumb-round.gif"></div>
+</div>
+<table style="position:absolute;Right:1%;top: 1%">
+<tr>
+<td><button id="button1" onClick="window.open('help.html','instructions','width=570,height=325,top=200,left=300')" style="font-size:16;font-weight:bold" type="button">?</button>
+</td>
+</tr>
+</table>
+</table>
+
+<iframe src="songlist.html" height="50%" width="90%" style="position:absolute;Left:5%;bottom:-10;top: 40%" > 
+>You need a Frames Capable browser to view this content.</iframe> 
 </html>

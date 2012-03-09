@@ -42,6 +42,7 @@ var	isKeyFlat	= [false, true, false, true, false, false, true, false, true, fals
 	],
 	container,
 	settingButton,
+	helpButton,
 	keyboard,
 	pitchWheel,
 	modWheel,
@@ -185,7 +186,6 @@ function press(num, ch, vel){
 	keys.item(num).addClass('pressed');
 	onmidievent(new MidiEvent(ch || channel, 9, num, vel || velocity));
  
-
 	// play a note
 	var source1 = context.createBufferSource();
 	source1.buffer = this.bufferLoader.bufferList[num-23];
@@ -200,6 +200,7 @@ function mouseKeyPress(num){
 	release(mkey);
 	mkey = num;
 	press(num);
+//	alert('mousekey');
 }
 
 function touching(e){
@@ -295,6 +296,12 @@ function defineElements(){
 		title: 'Settings',
 		html: 'Control Panel'
 	});
+	
+	helpButton = create('button', {
+		id: 'helpButton',
+		title: 'Help!',
+		html: 'Help'
+	});
 
 	var sldOptions = {
 		direction: 'vertical',
@@ -307,8 +314,9 @@ function defineElements(){
 	pitchWheel.dom.id = 'pitchWheel';
 	modWheel.dom.id = 'modWheel';
 
-	Jin.appendChildren(keyboard, container);
+	Jin.appendChildren(keyboard, container);	Jin.appendChildren(document.body, helpButton);
 	Jin.appendChildren(document.body, keyboard, settingButton, pitchWheel.dom, modWheel.dom);
+
 	pitchWheel.refresh();
 	modWheel.refresh();
 }

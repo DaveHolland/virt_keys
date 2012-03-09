@@ -1,0 +1,59 @@
+HTML5MIDI<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<script src="http://cdn.jquerytools.org/1.2.6/jquery.tools.min.js"></script>
+
+<!-- Dependencies --> 
+<script src="http://yui.yahooapis.com/2.9.0/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script src="http://yui.yahooapis.com/2.9.0/build/dragdrop/dragdrop-min.js"></script>
+ 
+<!-- Slider skin (optional) --> 
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.9.0/build/slider/assets/skins/sam/slider.css">
+ 
+<!-- Slider source file --> 
+<script src="http://yui.yahooapis.com/2.9.0/build/slider/slider-min.js"></script>
+ 
+<style>
+#sliderbg { position: relative; height: 20px; width: 220px; background: #fff url('images\rails.png') repeat-x 0 0; } #minthumb, #maxthumb { position: absolute; height: 20px; width: 20px; left: 0; /* assumed, but for redundancy */ } 
+</style>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>Virtual Midi Keyboard</title>
+
+</head>
+	<body>
+
+<!-- styling for the range -->
+<link rel="stylesheet" type="text/css" href="range.css"/>
+
+<!-- a couple of HTML5 range inputs with standard attributes -->
+<input type="range" name="range1" min="50" max="500" step="20" value="100" />
+<input type="range" name="range2" min="0" max="1500" step="50" value="450" />
+
+<!-- select all range inputs and make them ranges -->
+
+<div id="sliderbg">
+    <div id="minthumb"><img src="yourthumbimage.png" alt="Thumb for min value in range" height="20" width="20"></div>
+    <div id="maxthumb"><img src="yourthumbimage.png" alt="Thumb for max value in range" height="20" width="20"></div>
+</div>
+ 
+
+<script>
+$(":range").rangeinput();
+
+var dualSlider = YAHOO.widget.Slider.getHorizDualSlider(
+                    "sliderbg","minthumb","maxthumb",200);
+ 
+// Maintain a minimum of 10px distance between the inner edges of the thumbs
+dualSlider.minRange = 10;
+ 
+
+
+</script>
+
+
+	</body>
+
+</html>
+
+
