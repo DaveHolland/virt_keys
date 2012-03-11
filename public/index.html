@@ -10,17 +10,35 @@
 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     	<link rel="stylesheet" type="text/css" href="../../assets/yui.css" >
+		
+		 
+<table style="position:absolute;Right:1%;top: 1%">
+<tr>
+<td><label id = "caveat">You need the Google Chrome browser to experience this site.</label></td>
+<td><button id="button1" onClick="window.open('help.html','instructions','width=570,height=325,top=200,left=300')" style="font-size:16;font-weight:bold" type="button">?</button>
+</td>
+</tr>
+</table>
 
 <style type="text/css">
-/*margin and padding on body element
-  can introduce errors in determining
-  element position and are not recommended;
-  we turn them off as a foundation for YUI
-  CSS treatments. */
+
 body {
 	margin:0;
 	padding:0;
 }
+
+label.shown {
+	font-size:16;
+	font-weight:bold;
+	color:red
+}
+
+label.hidden {
+	font-size:16;
+	font-weight:bold;
+	color:black
+}
+
 </style>
 
 <script type="text/javascript">
@@ -41,6 +59,136 @@ function help()
 {
 }
 
+var BrowserDetect = {
+	init: function () {
+		this.browser = this.searchString(this.dataBrowser) || "An unknown browser";
+		this.version = this.searchVersion(navigator.userAgent)
+			|| this.searchVersion(navigator.appVersion)
+			|| "an unknown version";
+		this.OS = this.searchString(this.dataOS) || "an unknown OS";
+	},
+	searchString: function (data) {
+		for (var i=0;i<data.length;i++)	{
+			var dataString = data[i].string;
+			var dataProp = data[i].prop;
+			this.versionSearchString = data[i].versionSearch || data[i].identity;
+			if (dataString) {
+				if (dataString.indexOf(data[i].subString) != -1)
+					return data[i].identity;
+			}
+			else if (dataProp)
+				return data[i].identity;
+		}
+	},
+	searchVersion: function (dataString) {
+		var index = dataString.indexOf(this.versionSearchString);
+		if (index == -1) return;
+		return parseFloat(dataString.substring(index+this.versionSearchString.length+1));
+	},
+	dataBrowser: [
+		{
+			string: navigator.userAgent,
+			subString: "Chrome",
+			identity: "Chrome"
+		},
+		{ 	string: navigator.userAgent,
+			subString: "OmniWeb",
+			versionSearch: "OmniWeb/",
+			identity: "OmniWeb"
+		},
+		{
+			string: navigator.vendor,
+			subString: "Apple",
+			identity: "Safari",
+			versionSearch: "Version"
+		},
+		{
+			prop: window.opera,
+			identity: "Opera",
+			versionSearch: "Version"
+		},
+		{
+			string: navigator.vendor,
+			subString: "iCab",
+			identity: "iCab"
+		},
+		{
+			string: navigator.vendor,
+			subString: "KDE",
+			identity: "Konqueror"
+		},
+		{
+			string: navigator.userAgent,
+			subString: "Firefox",
+			identity: "Firefox"
+		},
+		{
+			string: navigator.vendor,
+			subString: "Camino",
+			identity: "Camino"
+		},
+		{		// for newer Netscapes (6+)
+			string: navigator.userAgent,
+			subString: "Netscape",
+			identity: "Netscape"
+		},
+		{
+			string: navigator.userAgent,
+			subString: "MSIE",
+			identity: "Explorer",
+			versionSearch: "MSIE"
+		},
+		{
+			string: navigator.userAgent,
+			subString: "Gecko",
+			identity: "Mozilla",
+			versionSearch: "rv"
+		},
+		{ 		// for older Netscapes (4-)
+			string: navigator.userAgent,
+			subString: "Mozilla",
+			identity: "Netscape",
+			versionSearch: "Mozilla"
+		}
+	],
+	dataOS : [
+		{
+			string: navigator.platform,
+			subString: "Win",
+			identity: "Windows"
+		},
+		{
+			string: navigator.platform,
+			subString: "Mac",
+			identity: "Mac"
+		},
+		{
+			   string: navigator.userAgent,
+			   subString: "iPhone",
+			   identity: "iPhone/iPod"
+	    },
+		{
+			string: navigator.platform,
+			subString: "Linux",
+			identity: "Linux"
+		}
+	]
+
+};
+
+BrowserDetect.init();
+
+if (BrowserDetect.browser == "Chrome")
+{
+	var theElement = document.getElementById('caveat');
+	theElement.className += "hidden";
+}
+else {
+	var theElement = document.getElementById('caveat');
+	theElement.className += "shown";
+}
+
+	
 function BufferLoader(context, urlList, callback) {
   this.context = context;
   this.urlList = urlList;
@@ -93,7 +241,7 @@ var runtime;
 
 function init() {
   context = new webkitAudioContext();
-
+  
   bufferLoader = new BufferLoader(
     context,
     [
@@ -157,8 +305,10 @@ function init() {
     ],
     finishedLoading
     );
- alert('Done creating loader.  Wait till you hear the chimes!');
-  bufferLoader.load();
+
+	alert('Done creating loader.  Wait till you hear the chimes!');
+	
+	bufferLoader.load();
 }
 
 function finishedLoading(bufferList) {
@@ -363,6 +513,7 @@ function finishedLoading(bufferList) {
         YAHOO.example.slider = slider;
     });
 })();
+
 </script>
 
 <!--END SOURCE CODE FOR EXAMPLE =============================== -->
@@ -377,13 +528,8 @@ function finishedLoading(bufferList) {
     <div id="demo_min_thumb"><img src="assets/l-thumb-round.gif"></div>
     <div id="demo_max_thumb"><img src="assets/r-thumb-round.gif"></div>
 </div>
-<table style="position:absolute;Right:1%;top: 1%">
-<tr>
-<td><button id="button1" onClick="window.open('help.html','instructions','width=570,height=325,top=200,left=300')" style="font-size:16;font-weight:bold" type="button">?</button>
-</td>
-</tr>
-</table>
-</table>
+
+
 
 <iframe src="songlist.html" height="50%" width="90%" style="position:absolute;Left:5%;bottom:-10;top: 40%" > 
 >You need a Frames Capable browser to view this content.</iframe> 

@@ -315,7 +315,7 @@ function defineElements(){
 	modWheel.dom.id = 'modWheel';
 
 	Jin.appendChildren(keyboard, container);	Jin.appendChildren(document.body, helpButton);
-	Jin.appendChildren(document.body, keyboard, settingButton, pitchWheel.dom, modWheel.dom);
+	Jin.appendChildren(document.body, keyboard, settingButton);
 
 	pitchWheel.refresh();
 	modWheel.refresh();
